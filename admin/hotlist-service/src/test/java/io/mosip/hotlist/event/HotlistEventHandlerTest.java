@@ -38,7 +38,7 @@ public class HotlistEventHandlerTest {
 
 	@Test
 	public void testPublishEvent() {
-		handler.publishEvent("id", "idType", "status", DateUtils.getUTCCurrentDateTime());
+		handler.publishEvent("id", "idType", "status", DateUtils.getUTCCurrentDateTime(), "description");
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class HotlistEventHandlerTest {
 		try {
 			doThrow(new NullPointerException()).when(publisher).publishUpdate(Mockito.any(), Mockito.any(),
 					Mockito.any(), Mockito.any(), Mockito.any());
-			handler.publishEvent("id", "idType", "status", DateUtils.getUTCCurrentDateTime());
+			handler.publishEvent("id", "idType", "status", DateUtils.getUTCCurrentDateTime(), "description");
 		} catch (HotlistRetryException e) {
 			assertTrue(e.getErrorCode().contentEquals(HotlistErrorConstants.UNKNOWN_ERROR.getErrorCode()));
 			assertTrue(e.getErrorText().contentEquals(HotlistErrorConstants.UNKNOWN_ERROR.getErrorMessage()));

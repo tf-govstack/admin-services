@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpEntity;
 
 import io.mosip.kernel.core.retry.RetryAspect;
 import io.mosip.kernel.core.retry.RetryConfig;
@@ -17,8 +18,8 @@ import io.mosip.kernel.core.util.RetryUtil;
  * @author Manoj SP
  */
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
-@ComponentScan(basePackages = { "io.mosip.hotlist.*", "${mosip.auth.adapter.impl.basepackage}" })
-@Import({ RetryConfig.class, RetryUtil.class, RetryListenerImpl.class, RetryAspect.class })
+@ComponentScan(basePackages = { "io.mosip.hotlist.*", "${mosip.auth.adapter.impl.basepackage}"})
+@Import({ RetryConfig.class, RetryUtil.class, RetryListenerImpl.class, RetryAspect.class, HttpEntity.class })
 public class HotlistMainApplication {
 
 	/**

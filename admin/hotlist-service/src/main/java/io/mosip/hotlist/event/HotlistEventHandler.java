@@ -63,7 +63,7 @@ public class HotlistEventHandler {
 	 */
 	@Async
 	@WithRetry
-	public void publishEvent(String id, String idType, String status, LocalDateTime expiryTimestamp) {
+	public void publishEvent(String id, String idType, String status, LocalDateTime expiryTimestamp, String description) {
 		try {
 			EventModel payload = new EventModel();
 			payload.setPublisher(appId);
@@ -77,6 +77,7 @@ public class HotlistEventHandler {
 			data.put("id", id);
 			data.put("idType", idType);
 			data.put("status", status);
+			data.put("description", description);
 			data.put("expiryTimestamp",
 					Objects.nonNull(expiryTimestamp) ? DateUtils.formatToISOString(expiryTimestamp) : expiryTimestamp);
 			event.setData(data);

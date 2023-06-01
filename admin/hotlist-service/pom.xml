@@ -18,6 +18,7 @@
 		<powermock.version>2.0.0</powermock.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 		<maven.jacoco.version>0.8.5</maven.jacoco.version>
+		<commons.packet.manager.version>1.2.0.1-B1</commons.packet.manager.version>
 
 		<!-- maven properties -->
 		<maven.compiler.target>11</maven.compiler.target>
@@ -30,9 +31,9 @@
 		<spring-webflux.version>5.0.6.RELEASE</spring-webflux.version>
 
 		<!-- kernel properties -->
-		<kernel-core.version>1.2.0.1-SNAPSHOT</kernel-core.version>
-		<kernel-websubclient-api.version>1.2.0.1-SNAPSHOT</kernel-websubclient-api.version>
-		<kernel-logger-logback.version>1.2.0.1-SNAPSHOT</kernel-logger-logback.version>
+		<kernel-core.version>1.2.0.1-B1</kernel-core.version>
+		<kernel-websubclient-api.version>1.2.0.1-B1</kernel-websubclient-api.version>
+		<kernel-logger-logback.version>1.2.0.1-B1</kernel-logger-logback.version>
 	</properties>
 
 	<repositories>
@@ -100,6 +101,11 @@
 			<version>${kernel-logger-logback.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-templatemanager-velocity</artifactId>
+			<version>${kernel-core.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webflux</artifactId>
 			<version>${spring-webflux.version}</version>
@@ -131,6 +137,46 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<version>${spring.boot.version}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.9</version>
+		</dependency>
+		<dependency>
+   			<groupId>org.assertj</groupId>
+   			<artifactId>assertj-core</artifactId>
+   			<version>1.7.0</version>
+		</dependency>
+		<dependency>
+        	<groupId>org.springframework.boot</groupId>
+        	<artifactId>spring-boot-starter-web</artifactId>
+			<version>${spring.boot.version}</version>
+    	</dependency> 
+    	<dependency>
+	        <groupId>org.mvel</groupId>
+	        <artifactId>mvel2</artifactId>
+	        <version>2.4.7.Final</version>
+	   </dependency>
+	   <dependency>
+			<groupId>io.mosip.commons</groupId>
+			<artifactId>commons-packet-manager</artifactId>
+			<version>${commons.packet.manager.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.mosip.kernel</groupId>
+					<artifactId>kernel-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.mosip.kernel</groupId>
+					<artifactId>kernel-logger-logback</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	<distributionManagement>
@@ -271,10 +317,7 @@
 							<goal>sign</goal>
 						</goals>
 						<configuration>
-							<gpgArguments>
-								<arg>--pinentry-mode</arg>
-								<arg>loopback</arg>
-							</gpgArguments>
+							<skip>true</skip>
 						</configuration>
 					</execution>
 				</executions>

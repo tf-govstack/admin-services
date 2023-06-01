@@ -37,6 +37,13 @@ public class HotlistValidator implements Validator {
 	/** The allowed id types. */
 	@Value("#{'${mosip.hotlist.allowedIdTypes:}'.split(',')}")
 	private List<String> allowedIdTypes;
+	
+	@Value("${mosip.id.validation.identity.phone}")
+	private String phoneRegex;
+
+	@Value("${mosip.id.validation.identity.email}")
+	private String emailRegex;
+
 
 	/**
 	 * Inits the.
@@ -136,5 +143,13 @@ public class HotlistValidator implements Validator {
 			errors.reject(INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(INVALID_INPUT_PARAMETER.getErrorMessage(), "expiryTimestamp"));
 		}
+	}
+	
+	public boolean phoneValidator(String phone) {
+		return phone.matches(phoneRegex);
+	}
+
+	public boolean emailValidator(String email) {
+		return email.matches(emailRegex);
 	}
 }

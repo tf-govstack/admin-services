@@ -49,6 +49,7 @@ public class SwaggerConfig {
 		return api;
     }
 	
+	
 	@Bean
 	public GroupedOpenApi groupedOpenApi() {
 		return GroupedOpenApi.builder().group(openApiProperties.getGroup().getName())

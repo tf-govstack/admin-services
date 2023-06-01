@@ -17,5 +17,7 @@ public class HotlistRequestResponseDTO {
 	
 	private String status;
 	
+	private String description;
+	
 	private LocalDateTime expiryTimestamp;
 }
