@@ -53,7 +53,7 @@ import io.mosip.hotlist.validator.HotlistValidator;
 
 /**
  * 
- * @author Girish Yarru
+ * @author Anchit Ayush Guria
  *
  */
 @Component
