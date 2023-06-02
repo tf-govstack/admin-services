@@ -66,7 +66,7 @@ public class HotlistServiceImpl implements HotlistService {
 	private String appId;
 	
 	/** Send notification flag */
-	@Value("${hotlist.notification.send}")
+	@Value("${hotlist.notification.send:NO}")
 	private String sendNotification;
 
 	/** The hotlist repo. */

@@ -17,12 +17,14 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.hotlist.constant.HotlistErrorConstants;
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
+import io.mosip.hotlist.dto.NotificationResponseDTO;
 import io.mosip.hotlist.entity.Hotlist;
 import io.mosip.hotlist.event.HotlistEventHandler;
 import io.mosip.hotlist.exception.HotlistAppException;
@@ -43,6 +45,9 @@ public class HotlistServiceTest {
 
 	@InjectMocks
 	private HotlistServiceImpl service;
+	
+	@Mock
+	NotificationService notificationService;
 
 	@Mock
 	private HotlistRepository hotlistRepo;
@@ -60,10 +65,17 @@ public class HotlistServiceTest {
 
 	@Test
 	public void testBlockIdAlreadyHotlisted() throws HotlistAppException {
+		
+		ReflectionTestUtils.setField(service, "sendNotification", "YES");
+		
 		Hotlist entity = new Hotlist();
 		entity.setStatus(HotlistStatus.BLOCKED);
 		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Optional.of(entity));
+		
+		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
+		when(notificationService.sendNotification(Mockito.any()))
+				.thenReturn(notificationResponse);
 		HotlistRequestResponseDTO blockRequest = new HotlistRequestResponseDTO();
 		blockRequest.setId("id");
 		blockRequest.setIdType("idType");
@@ -74,8 +86,15 @@ public class HotlistServiceTest {
 
 	@Test
 	public void testBlockIdNotHotlisted() throws HotlistAppException {
+		
+		ReflectionTestUtils.setField(service, "sendNotification", "YES");
+		
 		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Optional.empty());
+
+		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
+		when(notificationService.sendNotification(Mockito.any()))
+				.thenReturn(notificationResponse);
 		HotlistRequestResponseDTO blockRequest = new HotlistRequestResponseDTO();
 		blockRequest.setId("id");
 		blockRequest.setIdType("idType");
@@ -167,10 +186,17 @@ public class HotlistServiceTest {
 
 	@Test
 	public void testUnblockIdAlreadyHotlisted() throws HotlistAppException {
+		
+		ReflectionTestUtils.setField(service, "sendNotification", "YES");
+		
 		Hotlist entity = new Hotlist();
 		entity.setStatus(HotlistStatus.BLOCKED);
 		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Optional.of(entity));
+
+		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
+		when(notificationService.sendNotification(Mockito.any()))
+				.thenReturn(notificationResponse);
 		HotlistRequestResponseDTO unblockRequest = new HotlistRequestResponseDTO();
 		unblockRequest.setId("id");
 		unblockRequest.setIdType("idType");
@@ -181,8 +207,15 @@ public class HotlistServiceTest {
 
 	@Test
 	public void testUnblockIdNotHotlisted() throws HotlistAppException {
+		
+		ReflectionTestUtils.setField(service, "sendNotification", "YES");
+		
 		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(Optional.empty());
+
+		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
+		when(notificationService.sendNotification(Mockito.any()))
+				.thenReturn(notificationResponse);
 		HotlistRequestResponseDTO unblockRequest = new HotlistRequestResponseDTO();
 		unblockRequest.setId("id");
 		unblockRequest.setIdType("idType");
