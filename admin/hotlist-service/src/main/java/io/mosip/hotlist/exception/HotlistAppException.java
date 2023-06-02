@@ -49,5 +49,11 @@ public class HotlistAppException extends BaseCheckedException {
 		super(errorConstant.getErrorCode(), errorConstant.getErrorMessage(), rootCause);
 	}
 	
+	public HotlistAppException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
+	}
 	
+	public HotlistAppException(String errorCode, String errorMessage, String customMessage) {
+		super(errorCode, errorMessage +"::" + customMessage);
+	}
 }

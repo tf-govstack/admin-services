@@ -28,6 +28,9 @@ import io.mosip.hotlist.service.HotlistService;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.hotlist.service.NotificationService;
+import io.mosip.hotlist.constant.NotificationTemplateCode;
+import io.mosip.hotlist.dto.NotificationRequestDto;
 
 /**
  * The Class HotlistServiceImpl.
@@ -61,6 +64,10 @@ public class HotlistServiceImpl implements HotlistService {
 	/** The app id. */
 	@Value("${spring.application.name:HOTLIST}")
 	private String appId;
+	
+	/** Send notification flag */
+	@Value("${hotlist.notification.send}")
+	private String sendNotification;
 
 	/** The hotlist repo. */
 	@Autowired
@@ -77,6 +84,9 @@ public class HotlistServiceImpl implements HotlistService {
 	/** The event handler. */
 	@Autowired
 	private HotlistEventHandler eventHandler;
+	
+	 @Autowired
+	 private NotificationService notificationService;
 
 	/**
 	 * Block.
@@ -93,6 +103,7 @@ public class HotlistServiceImpl implements HotlistService {
 					blockRequest.getIdType(), false);
 			String dbStatus = HotlistStatus.UNBLOCKED;
 			String requestedStatus = HotlistStatus.BLOCKED;
+			String description = blockRequest.getDescription();
 			LocalDateTime expiryTimestamp = blockRequest.getExpiryTimestamp();
 			if (hotlistedOptionalData.isPresent()) {
 				updateStatus(blockRequest, idHash, hotlistedOptionalData, dbStatus, requestedStatus);
@@ -105,9 +116,28 @@ public class HotlistServiceImpl implements HotlistService {
 				hotlist.setIsDeleted(false);
 				hotlistHRepo.save(mapper.convertValue(hotlist, HotlistHistory.class));
 				hotlistRepo.save(hotlist);
-				eventHandler.publishEvent(idHash, blockRequest.getIdType(), status, hotlist.getExpiryTimestamp());
+				eventHandler.publishEvent(idHash, blockRequest.getIdType(), status, hotlist.getExpiryTimestamp(), description);
 			}
-			return buildResponse(blockRequest.getId(), null, requestedStatus, isExpired(expiryTimestamp));
+			
+			if(sendNotification.equalsIgnoreCase("YES")) {
+				NotificationRequestDto notificationRequestDto = new NotificationRequestDto();			
+				NotificationTemplateCode templateTypeCode = NotificationTemplateCode.HS_UIN_BLOCK;
+				
+				if(blockRequest.getIdType().equalsIgnoreCase("UIN")) {
+					templateTypeCode = NotificationTemplateCode.HS_UIN_BLOCK;
+				}
+				
+				if(blockRequest.getIdType().equalsIgnoreCase("VID")) {
+					templateTypeCode = NotificationTemplateCode.HS_VID_BLOCK;
+				}
+				
+				notificationRequestDto.setId(blockRequest.getId());
+				notificationRequestDto.setIdType(blockRequest.getIdType());
+				notificationRequestDto.setTemplateTypeCode(templateTypeCode);
+				notificationService.sendNotification(notificationRequestDto);
+			}
+			
+			return buildResponse(blockRequest.getId(), null, requestedStatus, description, isExpired(expiryTimestamp));
 		} catch (DataAccessException | TransactionException e) {
 			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE_IMPL, BLOCK, e.getMessage());
 			throw new HotlistAppException(HotlistErrorConstants.DATABASE_ACCESS_ERROR, e);
@@ -130,6 +160,7 @@ public class HotlistServiceImpl implements HotlistService {
 			if (hotlistedOptionalData.isPresent()) {
 				Hotlist hotlistedData = hotlistedOptionalData.get();
 				String status = hotlistedData.getStatus();
+				String description = hotlistedData.getDescription();
 				if (Objects.nonNull(isExpired(hotlistedData.getExpiryTimestamp()))) {
 					switch (status) {
 					case HotlistStatus.BLOCKED:
@@ -139,11 +170,11 @@ public class HotlistServiceImpl implements HotlistService {
 						status = HotlistStatus.BLOCKED;
 						break;
 					}
-					return buildResponse(id, idType, status, hotlistedData.getExpiryTimestamp());
+					return buildResponse(id, idType, status, description, hotlistedData.getExpiryTimestamp());
 				}
-				return buildResponse(id, idType, status, null);
+				return buildResponse(id, idType, status, description, null);
 			} else {
-				return buildResponse(id, idType, HotlistStatus.UNBLOCKED, null);
+				return buildResponse(id, idType, HotlistStatus.UNBLOCKED, null, null);
 			}
 		} catch (DataAccessException | TransactionException e) {
 			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE_IMPL, RETRIEVE_HOTLIST, e.getMessage());
@@ -169,7 +200,27 @@ public class HotlistServiceImpl implements HotlistService {
 			if (hotlistedOptionalData.isPresent()) {
 				updateStatus(unblockRequest, idHash, hotlistedOptionalData, dbStatus, requestedStatus);
 			}
-			return buildResponse(unblockRequest.getId(), null, requestedStatus, isExpired(unblockRequest.getExpiryTimestamp()));
+			
+			if(sendNotification.equalsIgnoreCase("YES")) {
+
+				NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+				NotificationTemplateCode templateTypeCode = NotificationTemplateCode.HS_UIN_BLOCK;
+				
+				if(unblockRequest.getIdType().equalsIgnoreCase("UIN")) {
+					templateTypeCode = NotificationTemplateCode.HS_UIN_UNBLOCK;
+				}
+				
+				if(unblockRequest.getIdType().equalsIgnoreCase("VID")) {
+					templateTypeCode = NotificationTemplateCode.HS_VID_UNBLOCK;
+				}
+				
+				notificationRequestDto.setId(unblockRequest.getId());
+				notificationRequestDto.setIdType(unblockRequest.getIdType());
+				notificationRequestDto.setTemplateTypeCode(templateTypeCode);
+				notificationService.sendNotification(notificationRequestDto);
+			}
+			
+			return buildResponse(unblockRequest.getId(), null, requestedStatus, unblockRequest.getDescription(), isExpired(unblockRequest.getExpiryTimestamp()));
 		} catch (DataAccessException | TransactionException e) {
 			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_SERVICE_IMPL, "unblock", e.getMessage());
 			throw new HotlistAppException(HotlistErrorConstants.DATABASE_ACCESS_ERROR, e);
@@ -201,13 +252,13 @@ public class HotlistServiceImpl implements HotlistService {
 		if(!hotlistedOptionalData.isPresent())
 			return null;
 		Hotlist hotlist = hotlistedOptionalData.get();
+		hotlistHRepo.save(mapper.convertValue(hotlist, HotlistHistory.class));
 		buildHotlistEntity(updateRequest, idHash, status, hotlist);
 		hotlist.setUpdatedBy(HotlistSecurityManager.getUser());
 		hotlist.setUpdatedDateTime(DateUtils.getUTCCurrentDateTime());
-		hotlistHRepo.save(mapper.convertValue(hotlist, HotlistHistory.class));
 		hotlistRepo.save(hotlist);
-		eventHandler.publishEvent(idHash, updateRequest.getIdType(), status, hotlist.getExpiryTimestamp());
-		return buildResponse(hotlist.getIdValue(), null, updateRequest.getStatus(), null);
+		eventHandler.publishEvent(idHash, updateRequest.getIdType(), status, hotlist.getExpiryTimestamp(), updateRequest.getDescription());
+		return buildResponse(hotlist.getIdValue(), null, updateRequest.getStatus(), updateRequest.getDescription(), null);
 	}
 
 	/**
@@ -223,6 +274,7 @@ public class HotlistServiceImpl implements HotlistService {
 		hotlist.setIdValue(request.getId());
 		hotlist.setIdType(request.getIdType());
 		hotlist.setStatus(status);
+		hotlist.setDescription(request.getDescription());
 		hotlist.setStartTimestamp(DateUtils.getUTCCurrentDateTime());
 		hotlist.setExpiryTimestamp(Objects.nonNull(request.getExpiryTimestamp()) ? request.getExpiryTimestamp() : null);
 	}
@@ -241,11 +293,12 @@ public class HotlistServiceImpl implements HotlistService {
 	 * @param expiryTimestamp the expiry timestamp
 	 * @return the hotlist request response DTO
 	 */
-	private HotlistRequestResponseDTO buildResponse(String id, String idType, String status, LocalDateTime expiryTimestamp) {
+	private HotlistRequestResponseDTO buildResponse(String id, String idType, String status, String description, LocalDateTime expiryTimestamp) {
 		HotlistRequestResponseDTO response = new HotlistRequestResponseDTO();
 		response.setId(id);
 		response.setIdType(idType);
 		response.setStatus(status);
+		response.setDescription(description);
 		response.setExpiryTimestamp(expiryTimestamp);
 		return response;
 	}

@@ -31,6 +31,8 @@ public class HotlistHistory {
 	public String idType;
 
 	public String status;
+	
+	public String description;
 
 	@Id
 	public LocalDateTime startTimestamp;

@@ -86,7 +86,7 @@ public class HotlistController {
 			response.setResponse(blockResponse);
 			auditHelper.audit(AuditModules.HOTLIST_SERVICE, AuditEvents.BLOCK_REQUEST,
 					HotlistSecurityManager.hash(request.getRequest().getId().getBytes()), request.getRequest().getIdType(),
-					"BLOCK HOTLIST REQUESTED");
+					"HOTLIST BLOCK REQUESTED --> " + request.getRequest().getDescription());
 		} catch (HotlistAppException e) {
 			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_CONTROLLER, BLOCK, e.getMessage());
 			response.setErrors(Collections.singletonList(new ServiceError(e.getErrorCode(), e.getErrorText())));
@@ -144,7 +144,7 @@ public class HotlistController {
 			response.setResponse(updateHotlistResponse);
 			auditHelper.audit(AuditModules.HOTLIST_SERVICE, AuditEvents.UNBLOCK_HOTLIST,
 					HotlistSecurityManager.hash(request.getRequest().getId().getBytes()), request.getRequest().getIdType(),
-					"UNBLOCK HOTLIST REQUESTED");
+					"HOTLIST UNBLOCK REQUESTED --> " + request.getRequest().getDescription());
 		} catch (HotlistAppException e) {
 			mosipLogger.error(HotlistSecurityManager.getUser(), HOTLIST_CONTROLLER, UNBLOCK, e.getMessage());
 			response.setErrors(Collections.singletonList(new ServiceError(e.getErrorCode(), e.getErrorText())));

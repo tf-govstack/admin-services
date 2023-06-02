@@ -32,6 +32,8 @@ public class Hotlist {
 	
 	private String status;
 	
+	private String description;
+	
 	private LocalDateTime startTimestamp;
 	
 	private LocalDateTime expiryTimestamp;
