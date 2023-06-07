@@ -143,8 +143,8 @@ public class Utility {
 					"Utilitiy::retrieveIdrepoJson()::exit");
 			return JsonUtil.getJSONObject(json, "identity");
 		} catch (IOException e) {
-			throw new HotlistAppException(HotlistErrorConstants.RESIDENT_SYS_EXCEPTION.getErrorCode(),
-					HotlistErrorConstants.RESIDENT_SYS_EXCEPTION.getErrorMessage(), e);
+			throw new HotlistAppException(HotlistErrorConstants.HOTLIST_SYS_EXCEPTION.getErrorCode(),
+					HotlistErrorConstants.HOTLIST_SYS_EXCEPTION.getErrorMessage(), e);
 		}
 	}
 
@@ -200,8 +200,8 @@ public class Utility {
 				}
 			}
 		} catch (IOException | ReflectiveOperationException e) {
-			throw new HotlistAppException(HotlistErrorConstants.RESIDENT_SYS_EXCEPTION.getErrorCode(),
-					HotlistErrorConstants.RESIDENT_SYS_EXCEPTION.getErrorMessage(), e);
+			throw new HotlistAppException(HotlistErrorConstants.HOTLIST_SYS_EXCEPTION.getErrorCode(),
+					HotlistErrorConstants.HOTLIST_SYS_EXCEPTION.getErrorMessage(), e);
 		}
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), id,
 				"Utilitiy::getMailingAttributes()::exit");

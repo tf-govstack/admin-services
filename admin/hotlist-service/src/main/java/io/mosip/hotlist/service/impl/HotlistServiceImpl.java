@@ -204,7 +204,7 @@ public class HotlistServiceImpl implements HotlistService {
 			if(sendNotification.equalsIgnoreCase("YES")) {
 
 				NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
-				NotificationTemplateCode templateTypeCode = NotificationTemplateCode.HS_UIN_BLOCK;
+				NotificationTemplateCode templateTypeCode = NotificationTemplateCode.HS_UIN_UNBLOCK;
 				
 				if(unblockRequest.getIdType().equalsIgnoreCase("UIN")) {
 					templateTypeCode = NotificationTemplateCode.HS_UIN_UNBLOCK;
