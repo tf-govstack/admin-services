@@ -58,32 +58,32 @@ public enum HotlistErrorConstants {
 	UNKNOWN_ERROR("ADM-HTL-015", "Unknown error occurred"),
 	
 	/** Template error **/
-	TEMPLATE_EXCEPTION("RES-SER-415","Template exception"),
+	TEMPLATE_EXCEPTION("ADM-HTL-415","Template exception"),
 
 	/** Invalid API response **/
-	INVALID_API_RESPONSE("RES-SER-419", "Invalid APi response from - "),
+	INVALID_API_RESPONSE("ADM-HTL-419", "Invalid APi response from - "),
 	
 	/** JSON processing exception **/
-	JSON_PROCESSING_EXCEPTION("RES-SER-421","JSON Processing Exception occured"),
+	JSON_PROCESSING_EXCEPTION("ADM-HTL-421","JSON Processing Exception occured"),
 	
 	/** IO exception **/
-	IO_EXCEPTION("RES-SER-420","IO Exception occured"),
+	IO_EXCEPTION("ADM-HTL-420","IO Exception occured"),
 
-	API_RESOURCE_UNAVAILABLE("RES-SER-411","API resource is not available"),
+	API_RESOURCE_UNAVAILABLE("ADM-HTL-411","API resource is not available"),
 	
 	/** API access exception **/
-	API_RESOURCE_ACCESS_EXCEPTION("RES-SER-412", "Unable to access API resource"),
+	API_RESOURCE_ACCESS_EXCEPTION("ADM-HTL-412", "Unable to access API resource"),
 	
 	/** Token generation failed **/
-	TOKEN_GENERATION_FAILED("RES-SER-409","Token generation failed"),
+	TOKEN_GENERATION_FAILED("ADM-HTL-409","Token generation failed"),
 	
 	/** Invalid ID **/
-	INVALID_ID("RES-SER-29", "Invalid id"),
+	INVALID_ID("ADM-HTL-29", "Invalid id"),
 	
-	RESIDENT_SYS_EXCEPTION("RES-SER-SYS-001","System exception occured"),
+	HOTLIST_SYS_EXCEPTION("ADM-HTL-SYS-001","System exception occured"),
 	
 	/** Notification error **/
-	NOTIFICATION_FAILURE("RES-SER-417","Sending notification(Email and SMS) to resident failed.");
+	NOTIFICATION_FAILURE("ADM-HTL-417","Sending notification(Email and SMS) to resident failed.");
 
 	/** The error code. */
 	private final String errorCode;
