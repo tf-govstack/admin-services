@@ -4,7 +4,8 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
-//import io.mosip.hotlist.util.Serializable;
+import io.mosip.hotlist.dto.LanguageDto;
+import io.mosip.hotlist.dto.LanguageResponseDto;
 import io.mosip.hotlist.logger.HotlistLogger;
 import io.mosip.hotlist.constant.ApiName;
 import io.mosip.hotlist.constant.LoggerFileConstant;
@@ -15,6 +16,8 @@ import io.mosip.hotlist.dto.IdRepoResponseDto;
 import io.mosip.hotlist.dto.JsonValue;
 import io.mosip.hotlist.exception.ApisResourceAccessException;
 import io.mosip.hotlist.exception.HotlistAppException;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.assertj.core.util.Lists;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -31,6 +34,8 @@ import org.springframework.web.client.RestTemplate;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.util.IOUtils;
 
 import javax.annotation.PostConstruct;
@@ -50,7 +55,7 @@ public class Utility {
 	private static final Logger logger = HotlistLogger.getLogger(Utility.class);
 
 	@Autowired
-	private HotlistServiceRestClient residentServiceRestClient;
+	private HotlistServiceRestClient hotlistServiceRestClient;
 
 	@Value("${config.server.file.storage.uri}")
 	private String configServerFileStorageURL;
@@ -78,6 +83,9 @@ public class Utility {
 
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	ObjectMapper mapper;
 
 	private static final String IDENTITY = "identity";
 	private static final String VALUE = "value";
@@ -98,7 +106,7 @@ public class Utility {
 		pathsegments.add(id);
 		ResponseWrapper<IdRepoResponseDto> response = null;
 		try {
-				response = (ResponseWrapper<IdRepoResponseDto>) residentServiceRestClient.getApi(
+				response = (ResponseWrapper<IdRepoResponseDto>) hotlistServiceRestClient.getApi(
 						ApiName.IDREPOGETIDBYUIN, pathsegments, "", null, ResponseWrapper.class);
 
 		} catch (ApisResourceAccessException e) {
@@ -150,7 +158,7 @@ public class Utility {
 
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getMailingAttributes(String id, Set<String> templateLangauges)
-			throws HotlistAppException {
+			throws HotlistAppException, ApisResourceAccessException {
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), id,
 				"Utilitiy::getMailingAttributes()::entry");
 		Map<String, Object> attributes = new HashMap<>();
@@ -208,7 +216,7 @@ public class Utility {
 		return attributes;
 	}
 
-	private String getPreferredLanguage(JSONObject demographicIdentity) {
+	private String getPreferredLanguage(JSONObject demographicIdentity) throws HotlistAppException, ApisResourceAccessException {
 		String preferredLang = null;
 		String preferredLangAttribute = env.getProperty("mosip.default.user-preferred-language-attribute");
 		if (!StringUtils.isBlank(preferredLangAttribute)) {
@@ -217,7 +225,48 @@ public class Utility {
 				preferredLang = String.valueOf(object);
 			}
 		}
-		return preferredLang;
+		
+		if(preferredLang == null || preferredLang.isEmpty()) {
+			return null;
+		}
+		
+		String langCode = null;
+		
+		langCode = getLangCodeFromNativeName(preferredLang);
+
+		return langCode;
+	}
+	
+	public String getLangCodeFromNativeName(String nativeName) throws ApisResourceAccessException{
+		String langCode=null;
+		try {
+			ResponseWrapper<LanguageResponseDto> response = (ResponseWrapper) hotlistServiceRestClient.getApi(ApiName.LANGUAGE,null, "", "", ResponseWrapper.class);
+
+			if (response.getErrors() != null && response.getErrors().size() > 0) {
+				response.getErrors().stream().forEach(r -> {
+					logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+							"LanguageUtility::getLangCodeFromNativeName():: error with error message " + r.getMessage());
+				});
+			}
+
+			LanguageResponseDto languageResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()), LanguageResponseDto.class);
+			
+			logger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"LanguageUtility::getLangCodeFromNativeName()::exit");
+			for(LanguageDto dto:languageResponseDto.getLanguages()) {
+				if(dto.getNativeName().equalsIgnoreCase(nativeName) || dto.getCode().equalsIgnoreCase(nativeName)
+						|| dto.getName().equalsIgnoreCase(nativeName)) {
+					langCode= dto.getCode();
+				}
+			}
+			
+		} catch (ApisResourceAccessException | IOException e) {
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+					"LanguageUtility::getLangCodeFromNativeName():: error with error message " + e.getMessage());
+			throw new ApisResourceAccessException(e.getMessage(), e);
+		}
+		return langCode;
+		
 	}
 
 	private Set<String> getDataCapturedLanguages(JSONObject mapperIdentity, JSONObject demographicIdentity)
