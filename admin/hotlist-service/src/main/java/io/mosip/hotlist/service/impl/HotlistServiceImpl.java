@@ -19,6 +19,7 @@ import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
 import io.mosip.hotlist.entity.Hotlist;
 import io.mosip.hotlist.entity.HotlistHistory;
 import io.mosip.hotlist.event.HotlistEventHandler;
+import io.mosip.hotlist.exception.ApisResourceAccessException;
 import io.mosip.hotlist.exception.HotlistAppException;
 import io.mosip.hotlist.logger.HotlistLogger;
 import io.mosip.hotlist.repository.HotlistHistoryRepository;
@@ -94,9 +95,10 @@ public class HotlistServiceImpl implements HotlistService {
 	 * @param blockRequest the block request
 	 * @return the hotlist request response DTO
 	 * @throws HotlistAppException the hotlist app exception
+	 * @throws ApisResourceAccessException 
 	 */
 	@Override
-	public HotlistRequestResponseDTO block(HotlistRequestResponseDTO blockRequest) throws HotlistAppException {
+	public HotlistRequestResponseDTO block(HotlistRequestResponseDTO blockRequest) throws HotlistAppException, ApisResourceAccessException {
 		try {
 			String idHash = HotlistSecurityManager.hash(blockRequest.getId().getBytes());
 			Optional<Hotlist> hotlistedOptionalData = hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(idHash,
@@ -188,9 +190,10 @@ public class HotlistServiceImpl implements HotlistService {
 	 * @param unblockRequest the update request
 	 * @return the hotlist request response DTO
 	 * @throws HotlistAppException the hotlist app exception
+	 * @throws ApisResourceAccessException 
 	 */
 	@Override
-	public HotlistRequestResponseDTO unblock(HotlistRequestResponseDTO unblockRequest) throws HotlistAppException {
+	public HotlistRequestResponseDTO unblock(HotlistRequestResponseDTO unblockRequest) throws HotlistAppException, ApisResourceAccessException {
 		try {
 			String idHash = HotlistSecurityManager.hash(unblockRequest.getId().getBytes());
 			Optional<Hotlist> hotlistedOptionalData = hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(idHash,

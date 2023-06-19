@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.hotlist.constant.AuditEvents;
 import io.mosip.hotlist.constant.AuditModules;
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
+import io.mosip.hotlist.exception.ApisResourceAccessException;
 import io.mosip.hotlist.exception.HotlistAppException;
 import io.mosip.hotlist.helper.AuditHelper;
 import io.mosip.hotlist.logger.HotlistLogger;
@@ -75,11 +76,12 @@ public class HotlistController {
 	 *
 	 * @param request the request
 	 * @return the response wrapper
+	 * @throws ApisResourceAccessException 
 	 */
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostHotlistBlock())")
 	@PostMapping(path = "/block", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseWrapper<HotlistRequestResponseDTO> block(
-			@Validated @RequestBody RequestWrapper<HotlistRequestResponseDTO> request) {
+			@Validated @RequestBody RequestWrapper<HotlistRequestResponseDTO> request) throws ApisResourceAccessException {
 		ResponseWrapper<HotlistRequestResponseDTO> response = new ResponseWrapper<>();
 		try {
 			HotlistRequestResponseDTO blockResponse = hotlistService.block(request.getRequest());
@@ -133,11 +135,12 @@ public class HotlistController {
 	 *
 	 * @param request the request
 	 * @return the response wrapper
+	 * @throws ApisResourceAccessException 
 	 */
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostHotlistUnblock())")
 	@PostMapping(path = "/unblock", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseWrapper<HotlistRequestResponseDTO> unblock(
-			@Validated @RequestBody RequestWrapper<HotlistRequestResponseDTO> request) {
+			@Validated @RequestBody RequestWrapper<HotlistRequestResponseDTO> request) throws ApisResourceAccessException {
 		ResponseWrapper<HotlistRequestResponseDTO> response = new ResponseWrapper<>();
 		try {
 			HotlistRequestResponseDTO updateHotlistResponse = hotlistService.unblock(request.getRequest());
