@@ -15,6 +15,8 @@ public enum ApiName {
 	TEMPLATES,
 
 	SMSNOTIFIER,
+	
+	LANGUAGE,
 
 	EMAILNOTIFIER;
 

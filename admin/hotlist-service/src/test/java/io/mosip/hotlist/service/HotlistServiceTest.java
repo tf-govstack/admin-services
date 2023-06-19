@@ -27,6 +27,7 @@ import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
 import io.mosip.hotlist.dto.NotificationResponseDTO;
 import io.mosip.hotlist.entity.Hotlist;
 import io.mosip.hotlist.event.HotlistEventHandler;
+import io.mosip.hotlist.exception.ApisResourceAccessException;
 import io.mosip.hotlist.exception.HotlistAppException;
 import io.mosip.hotlist.repository.HotlistHistoryRepository;
 import io.mosip.hotlist.repository.HotlistRepository;
@@ -64,7 +65,7 @@ public class HotlistServiceTest {
 	private HotlistEventHandler eventHandler;
 
 	@Test
-	public void testBlockIdAlreadyHotlisted() throws HotlistAppException {
+	public void testBlockIdAlreadyHotlisted() throws HotlistAppException, ApisResourceAccessException {
 		
 		ReflectionTestUtils.setField(service, "sendNotification", "YES");
 		
@@ -85,7 +86,7 @@ public class HotlistServiceTest {
 	}
 
 	@Test
-	public void testBlockIdNotHotlisted() throws HotlistAppException {
+	public void testBlockIdNotHotlisted() throws HotlistAppException, ApisResourceAccessException {
 		
 		ReflectionTestUtils.setField(service, "sendNotification", "YES");
 		
@@ -105,7 +106,7 @@ public class HotlistServiceTest {
 
 	@SuppressWarnings("serial")
 	@Test
-	public void testBlockTransactionFailed() throws HotlistAppException {
+	public void testBlockTransactionFailed() throws HotlistAppException, ApisResourceAccessException {
 		try {
 			when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
 					.thenThrow(new DataAccessException("") {
@@ -185,7 +186,7 @@ public class HotlistServiceTest {
 	}
 
 	@Test
-	public void testUnblockIdAlreadyHotlisted() throws HotlistAppException {
+	public void testUnblockIdAlreadyHotlisted() throws HotlistAppException, ApisResourceAccessException {
 		
 		ReflectionTestUtils.setField(service, "sendNotification", "YES");
 		
@@ -206,7 +207,7 @@ public class HotlistServiceTest {
 	}
 
 	@Test
-	public void testUnblockIdNotHotlisted() throws HotlistAppException {
+	public void testUnblockIdNotHotlisted() throws HotlistAppException, ApisResourceAccessException {
 		
 		ReflectionTestUtils.setField(service, "sendNotification", "YES");
 		
@@ -226,7 +227,7 @@ public class HotlistServiceTest {
 
 	@SuppressWarnings("serial")
 	@Test
-	public void testUnblockTransactionFailed() throws HotlistAppException {
+	public void testUnblockTransactionFailed() throws HotlistAppException, ApisResourceAccessException {
 		try {
 			when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
 					.thenThrow(new DataAccessException("") {

@@ -100,7 +100,7 @@ public class NotificationService {
 	private static final String SUCCESS = "success";
 	private static final String SEPARATOR = "/";
 
-	public NotificationResponseDTO sendNotification(NotificationRequestDto dto) throws HotlistAppException {
+	public NotificationResponseDTO sendNotification(NotificationRequestDto dto) throws HotlistAppException, ApisResourceAccessException {
 		logger.debug(LoggerFileConstant.APPLICATIONID.toString(), LoggerFileConstant.UIN.name(), dto.getId(),
 				"NotificationService::sendNotification()::entry");
 		boolean smsStatus = false;

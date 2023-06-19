@@ -17,6 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.hotlist.constant.HotlistErrorConstants;
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
+import io.mosip.hotlist.exception.ApisResourceAccessException;
 import io.mosip.hotlist.exception.HotlistAppException;
 import io.mosip.hotlist.helper.AuditHelper;
 import io.mosip.hotlist.service.HotlistService;
@@ -46,7 +47,7 @@ public class HotlistControllerTest {
 	private AuditHelper auditHelper;
 
 	@Test
-	public void blockIdTest() throws HotlistAppException {
+	public void blockIdTest() throws HotlistAppException, ApisResourceAccessException {
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
 		request.setId("id");
 		request.setIdType("idType");
@@ -59,7 +60,7 @@ public class HotlistControllerTest {
 	}
 
 	@Test
-	public void blockIdTestException() throws HotlistAppException {
+	public void blockIdTestException() throws HotlistAppException, ApisResourceAccessException {
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
 		request.setId("id");
 		request.setIdType("idType");
@@ -100,7 +101,7 @@ public class HotlistControllerTest {
 	}
 
 	@Test
-	public void updateBlockedIdTest() throws HotlistAppException {
+	public void updateBlockedIdTest() throws HotlistAppException, ApisResourceAccessException {
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
 		request.setId("id");
 		request.setIdType("idType");
@@ -113,7 +114,7 @@ public class HotlistControllerTest {
 	}
 
 	@Test
-	public void updateBlockedIdTestException() throws HotlistAppException {
+	public void updateBlockedIdTestException() throws HotlistAppException, ApisResourceAccessException {
 		HotlistRequestResponseDTO request = new HotlistRequestResponseDTO();
 		request.setId("id");
 		request.setIdType("idType");

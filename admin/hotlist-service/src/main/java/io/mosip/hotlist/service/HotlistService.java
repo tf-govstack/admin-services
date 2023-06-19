@@ -1,6 +1,7 @@
 package io.mosip.hotlist.service;
 
 import io.mosip.hotlist.dto.HotlistRequestResponseDTO;
+import io.mosip.hotlist.exception.ApisResourceAccessException;
 import io.mosip.hotlist.exception.HotlistAppException;
 
 /**
@@ -16,8 +17,9 @@ public interface HotlistService {
 	 * @param blockRequest the block request
 	 * @return the hotlist request response DTO
 	 * @throws HotlistAppException the hotlist app exception
+	 * @throws ApisResourceAccessException 
 	 */
-	public HotlistRequestResponseDTO block(HotlistRequestResponseDTO blockRequest) throws HotlistAppException;
+	public HotlistRequestResponseDTO block(HotlistRequestResponseDTO blockRequest) throws HotlistAppException, ApisResourceAccessException;
 
 	/**
 	 * Retrieve hotlist.
@@ -35,6 +37,7 @@ public interface HotlistService {
 	 * @param blockRequest the block request
 	 * @return the hotlist request response DTO
 	 * @throws HotlistAppException the hotlist app exception
+	 * @throws ApisResourceAccessException 
 	 */
-	public HotlistRequestResponseDTO unblock(HotlistRequestResponseDTO unblockRequest) throws HotlistAppException;
+	public HotlistRequestResponseDTO unblock(HotlistRequestResponseDTO unblockRequest) throws HotlistAppException, ApisResourceAccessException;
 }
