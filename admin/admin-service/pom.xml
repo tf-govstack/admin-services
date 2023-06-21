@@ -141,9 +141,17 @@
 					<groupId>io.mosip.kernel</groupId>
 					<artifactId>kernel-logger-logback</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>io.mosip.kernel</groupId>
+					<artifactId>kernel-keymanager-service</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
-
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-keymanager-service</artifactId>
+			<version>1.2.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>org.digibooster.spring.batch</groupId>
 			<artifactId>spring-batch-security</artifactId>
