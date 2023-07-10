@@ -151,6 +151,13 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-keymanager-service</artifactId>
 			<version>1.2.0.1-SNAPSHOT</version>
+			<exclusions>
+                		<exclusion>
+                    			<groupId>org.springframework.security</groupId>
+                    			<artifactId>spring-security-config</artifactId>
+                		</exclusion>
+            		</exclusions>
+            		<classifier>lib</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.digibooster.spring.batch</groupId>
