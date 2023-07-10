@@ -26,6 +26,7 @@ CREATE TABLE hotlist.hotlist_h (
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp,
+	description character varying(128),
 	CONSTRAINT "pk_idHashidTypestarttimestamp" PRIMARY KEY (id_hash,id_type,start_timestamp)
 
 );
@@ -39,6 +40,8 @@ COMMENT ON COLUMN hotlist.hotlist_h.id_type IS E'idType: Type of ID such as UIN,
 COMMENT ON COLUMN hotlist.hotlist_h.status IS E'status: status to denote whether the respective ID is blocked or unblocked.';
 -- ddl-end --
 COMMENT ON COLUMN hotlist.hotlist_h.start_timestamp IS E'startTimestamp: Timestamp when respective ID is hotlisted.';
+-- ddl-end --
+COMMENT ON COLUMN hotlist.hotlist.description IS E'description: Description is the reason for blocking and unblocking of id.';
 -- ddl-end --
 
 
