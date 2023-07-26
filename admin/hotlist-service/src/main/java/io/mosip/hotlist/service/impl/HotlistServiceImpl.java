@@ -121,7 +121,7 @@ public class HotlistServiceImpl implements HotlistService {
 				eventHandler.publishEvent(idHash, blockRequest.getIdType(), status, hotlist.getExpiryTimestamp(), description);
 			}
 			
-			if(sendNotification.equalsIgnoreCase("YES")) {
+			if(sendNotification != null && sendNotification.equalsIgnoreCase("YES")) {
 				NotificationRequestDto notificationRequestDto = new NotificationRequestDto();			
 				NotificationTemplateCode templateTypeCode = NotificationTemplateCode.HS_UIN_BLOCK;
 				
@@ -204,7 +204,7 @@ public class HotlistServiceImpl implements HotlistService {
 				updateStatus(unblockRequest, idHash, hotlistedOptionalData, dbStatus, requestedStatus);
 			}
 			
-			if(sendNotification.equalsIgnoreCase("YES")) {
+			if(sendNotification != null && sendNotification.equalsIgnoreCase("YES")) {
 
 				NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
 				NotificationTemplateCode templateTypeCode = NotificationTemplateCode.HS_UIN_UNBLOCK;
