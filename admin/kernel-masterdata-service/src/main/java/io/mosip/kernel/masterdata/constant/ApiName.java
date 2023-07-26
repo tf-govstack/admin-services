@@ -7,6 +7,6 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum ApiName {
 
-	PACKET_RESUME_API, PACKET_PAUSE_API;
+	PACKET_RESUME_API, PACKET_PROCESS_API, PACKET_PAUSE_API;
 
 }

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.PacketWorkflowActionResponseDTO;
+import io.mosip.kernel.masterdata.dto.PacketWorkflowInstanceRequestDto;
+import io.mosip.kernel.masterdata.dto.PacketWorkflowInstanceResponseDTO;
 import io.mosip.kernel.masterdata.dto.PacketWorkflowResumeRequestDto;
 import io.mosip.kernel.masterdata.dto.RegProcResponseWrapper;
 import io.mosip.kernel.masterdata.dto.SearchDtoWithoutLangCode;
@@ -37,6 +39,15 @@ public class PacketWorkflowController {
 			@Valid @RequestBody RequestWrapper<PacketWorkflowResumeRequestDto> requestDto) {
 		RegProcResponseWrapper<PacketWorkflowActionResponseDTO> responseWrapper = packetWorkflowActionService
 				.resumePacket(requestDto.getRequest());
+		return responseWrapper;
+	}
+	
+	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostpacketprocess())")
+	@PostMapping("/process")
+	public RegProcResponseWrapper<PacketWorkflowInstanceResponseDTO> processPacket(
+			@Valid @RequestBody RequestWrapper<PacketWorkflowInstanceRequestDto> requestDto) {
+		RegProcResponseWrapper<PacketWorkflowInstanceResponseDTO> responseWrapper = packetWorkflowActionService
+				.processPacket(requestDto.getRequest());
 		return responseWrapper;
 	}
 

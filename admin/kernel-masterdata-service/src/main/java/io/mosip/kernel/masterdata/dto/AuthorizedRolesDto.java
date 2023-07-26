@@ -358,6 +358,8 @@ public class AuthorizedRolesDto {
 	
 	private List<String> postpacketresume;
 	
+	private List<String> postpacketprocess;
+	
 	private List<String> postpacketsearch;
 	
 	private List<String> getpossiblevaluesfieldname;
