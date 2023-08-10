@@ -12,5 +12,7 @@ public class PacketWorkflowInstanceRequestDto {
 	private String source;
 	
 	private String additionalInfoReqId;
+	
+	private RegistrationAdditionalInfoDTO additionalInfo;
 
 }
