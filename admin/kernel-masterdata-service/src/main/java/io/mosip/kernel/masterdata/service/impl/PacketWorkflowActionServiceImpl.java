@@ -15,8 +15,6 @@ import io.mosip.kernel.masterdata.constant.ApiName;
 import io.mosip.kernel.masterdata.constant.PacketWorkflowErrorCode;
 import io.mosip.kernel.masterdata.dto.PacketWorkflowActionRequestDTO;
 import io.mosip.kernel.masterdata.dto.PacketWorkflowActionResponseDTO;
-import io.mosip.kernel.masterdata.dto.PacketWorkflowInstanceRequestDto;
-import io.mosip.kernel.masterdata.dto.PacketWorkflowInstanceResponseDTO;
 import io.mosip.kernel.masterdata.dto.PacketWorkflowResumeRequestDto;
 import io.mosip.kernel.masterdata.dto.RegProcRequestWrapper;
 import io.mosip.kernel.masterdata.dto.RegProcResponseWrapper;
@@ -46,12 +44,6 @@ public class PacketWorkflowActionServiceImpl implements PacketWorkflowActionServ
 	@Value("${mosip.regproc.workflow.search.version:v1}")
 	private String searchReqVersion;
 	
-	@Value("${mosip.regproc.workflow.instance.api-id:mosip.registration.processor.workflow.create}")
-	private String processRequestId;
-
-	@Value("${mosip.regproc.workflow.instance.version:1.0}")
-	private String processReqVersion;
-
 	@Autowired
 	RestClient restClient;
 
@@ -81,29 +73,6 @@ public class PacketWorkflowActionServiceImpl implements PacketWorkflowActionServ
 		return procResponseWrapper;
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public RegProcResponseWrapper<PacketWorkflowInstanceResponseDTO> processPacket(
-			PacketWorkflowInstanceRequestDto request) {
-		RegProcRequestWrapper<PacketWorkflowInstanceRequestDto> procRequestWrapper = new RegProcRequestWrapper<>();
-		RegProcResponseWrapper<PacketWorkflowInstanceResponseDTO> procResponseWrapper = null;
-		procRequestWrapper.setId(processRequestId);
-		procRequestWrapper.setVersion(processReqVersion);
-		procRequestWrapper.setRequest(request);
-		procRequestWrapper.setRequesttime(LocalDateTime.now().toString());
-		try {
-			String response = restClient.postApi(ApiName.PACKET_PROCESS_API, null, "", "", MediaType.APPLICATION_JSON,
-					procRequestWrapper, String.class);
-			procResponseWrapper = objectMapper.readValue(response, RegProcResponseWrapper.class);
-		} catch (Exception e) {
-			throw new MasterDataServiceException(
-					PacketWorkflowErrorCode.ERROR_OCCURED_WHILE_PROCESSING_PACKET.getErrorCode(),
-					PacketWorkflowErrorCode.ERROR_OCCURED_WHILE_PROCESSING_PACKET.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
-		}
-		return procResponseWrapper;
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public RegProcResponseWrapper<SearchResponseDto> searchPacket(SearchDtoWithoutLangCode request) {
