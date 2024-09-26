@@ -224,7 +224,112 @@ public class HotlistServiceTest {
 		assertTrue(response.getId().contentEquals("id"));
 		assertTrue(response.getStatus().contentEquals(HotlistStatus.UNBLOCKED));
 	}
+	
+	@Test
+	public void testBlockWithoutNotification() throws HotlistAppException, ApisResourceAccessException {
+		
+		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(Optional.empty());
+		
+		HotlistRequestResponseDTO blockRequest = new HotlistRequestResponseDTO();
+		blockRequest.setId("id");
+		blockRequest.setIdType("VID");
+		HotlistRequestResponseDTO response = service.block(blockRequest);
+		assertTrue(response.getId().contentEquals("id"));
+		assertTrue(response.getStatus().contentEquals(HotlistStatus.BLOCKED));
+	}
+	
+	@Test
+	public void testBlockUIN() throws HotlistAppException, ApisResourceAccessException {
+		
+		ReflectionTestUtils.setField(service, "sendNotification", "YES");
+		
+		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(Optional.empty());
 
+		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
+		when(notificationService.sendNotification(Mockito.any()))
+				.thenReturn(notificationResponse);
+		HotlistRequestResponseDTO blockRequest = new HotlistRequestResponseDTO();
+		blockRequest.setId("id");
+		blockRequest.setIdType("UIN");
+		HotlistRequestResponseDTO response = service.block(blockRequest);
+		assertTrue(response.getId().contentEquals("id"));
+		assertTrue(response.getStatus().contentEquals(HotlistStatus.BLOCKED));
+	}
+	
+	@Test
+	public void testBlockVID() throws HotlistAppException, ApisResourceAccessException {
+		
+		ReflectionTestUtils.setField(service, "sendNotification", "YES");
+		
+		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(Optional.empty());
+
+		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
+		when(notificationService.sendNotification(Mockito.any()))
+				.thenReturn(notificationResponse);
+		HotlistRequestResponseDTO blockRequest = new HotlistRequestResponseDTO();
+		blockRequest.setId("id");
+		blockRequest.setIdType("VID");
+		HotlistRequestResponseDTO response = service.block(blockRequest);
+		assertTrue(response.getId().contentEquals("id"));
+		assertTrue(response.getStatus().contentEquals(HotlistStatus.BLOCKED));
+	}
+
+	@Test
+	public void testUnblockVID() throws HotlistAppException, ApisResourceAccessException {
+		
+		ReflectionTestUtils.setField(service, "sendNotification", "YES");
+		
+		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(Optional.empty());
+
+		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
+		when(notificationService.sendNotification(Mockito.any()))
+				.thenReturn(notificationResponse);
+		HotlistRequestResponseDTO unblockRequest = new HotlistRequestResponseDTO();
+		unblockRequest.setId("id");
+		unblockRequest.setIdType("VID");
+		HotlistRequestResponseDTO response = service.unblock(unblockRequest);
+		assertTrue(response.getId().contentEquals("id"));
+		assertTrue(response.getStatus().contentEquals(HotlistStatus.UNBLOCKED));
+	}
+	
+	@Test
+	public void testUnblocUIN() throws HotlistAppException, ApisResourceAccessException {
+		
+		ReflectionTestUtils.setField(service, "sendNotification", "YES");
+		
+		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(Optional.empty());
+
+		NotificationResponseDTO notificationResponse = new NotificationResponseDTO();
+		when(notificationService.sendNotification(Mockito.any()))
+				.thenReturn(notificationResponse);
+		HotlistRequestResponseDTO unblockRequest = new HotlistRequestResponseDTO();
+		unblockRequest.setId("id");
+		unblockRequest.setIdType("UIN");
+		HotlistRequestResponseDTO response = service.unblock(unblockRequest);
+		assertTrue(response.getId().contentEquals("id"));
+		assertTrue(response.getStatus().contentEquals(HotlistStatus.UNBLOCKED));
+	}
+	
+	@Test
+	public void testUnblockWithouNotification() throws HotlistAppException, ApisResourceAccessException {
+		
+		when(hotlistRepo.findByIdHashAndIdTypeAndIsDeleted(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(Optional.empty());
+
+		
+		HotlistRequestResponseDTO unblockRequest = new HotlistRequestResponseDTO();
+		unblockRequest.setId("id");
+		unblockRequest.setIdType("idType");
+		HotlistRequestResponseDTO response = service.unblock(unblockRequest);
+		assertTrue(response.getId().contentEquals("id"));
+		assertTrue(response.getStatus().contentEquals(HotlistStatus.UNBLOCKED));
+	}
+	
 	@SuppressWarnings("serial")
 	@Test
 	public void testUnblockTransactionFailed() throws HotlistAppException, ApisResourceAccessException {
